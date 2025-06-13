@@ -1,22 +1,8 @@
-// Polyfill for requestAnimationFrame and cancelAnimationFrame
-if (typeof global.requestAnimationFrame !== 'function') {
-  global.requestAnimationFrame = function(callback) {
-    return setTimeout(callback, 0);
-  };
-}
-
-if (typeof global.cancelAnimationFrame !== 'function') {
-  global.cancelAnimationFrame = function(id) {
-    clearTimeout(id);
-  };
-}
-
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 

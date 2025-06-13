@@ -23,6 +23,7 @@ config.resolver.extraNodeModules = {
   http: require.resolve('stream-http'),
   https: require.resolve('https-browserify'),
   'raf': require.resolve('raf'),
+  'requestAnimationFrame': require.resolve('raf'),
 };
 
 module.exports = config; 

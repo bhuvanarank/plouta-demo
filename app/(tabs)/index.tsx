@@ -135,13 +135,24 @@ export default function PloutaSignupScreen() {
       setIsLoading(true);
       try {
         const storedEmail = await AsyncStorage.getItem('userEmail');
+        const storedPassword = await AsyncStorage.getItem('userPassword');    
+        console.log('storedEmail', storedEmail);
+        console.log('storedPassword', storedPassword);
+        console.log('email', email);
+        console.log('password', password);
 
-        if (storedEmail === email) {
-          Alert.alert(
-            'Account Exists',
-            'An account with this email already exists. Please use a different email or login.',
-            [{ text: 'OK' }]
-          );
+        if (storedEmail === email && storedPassword === password) {
+          // await AsyncStorage.setItem('isLoggedIn', 'true'); 
+          // await AsyncStorage.setItem('isEmailVerified', 'true');  
+          // await AsyncStorage.setItem('isAuthenticated', 'true');
+
+          router.replace('/(tabs)/dashboard');
+          return true;
+
+        }else if (storedEmail === email && storedPassword !== password) {
+          setPasswordError('Account Exists Please use correct password');
+          console.log('Account Exists');
+          return true;
         } else {
           // Generate a 6-digit OTP
           const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -156,22 +167,8 @@ export default function PloutaSignupScreen() {
             console.log('Generated OTP:', otp);
           }
 
-          // Here you would typically call your API to send the OTP via email
-          // For now, we'll just simulate it
-          
-          Alert.alert(
-            'Verification Required',
-            'We have sent a verification code to your email. Please verify your email to continue.',
-            [
-              {
-                text: 'OK',
-                onPress: () => {
-                  console.log('Navigating to OTP verification...');
-                  router.replace('../(auth)/verify-otp');
-                }
-              }
-            ]
-          );
+          // Directly navigate to OTP verification page
+          router.replace('../(auth)/verify-otp');
         }
       } catch (error) {
         Alert.alert(
@@ -179,6 +176,7 @@ export default function PloutaSignupScreen() {
           'Failed to create account. Please try again.',
           [{ text: 'OK' }]
         );
+        console.log('Error', error);
       } finally {
         setIsLoading(false);
       }

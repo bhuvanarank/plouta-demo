@@ -18,8 +18,8 @@ export default function SelectGoalScreen() {
     try {
       // Store the selected goal in AsyncStorage
       await AsyncStorage.setItem('selectedGoal', goal);
-      // Navigate directly to dashboard
-      router.push('/(tabs)/dashboard');
+      // Navigate directly to next page
+      router.replace('/(tabs)/phone-number' as any);
     } catch (error) {
       console.error('Error storing goal:', error);
     }

@@ -29,11 +29,8 @@ export const GOOGLE_CONFIG = {
   }),
   // Add any additional scopes you need
   scopes: ['profile', 'email'],
-  // Configure proper response type and access type
-  responseType: 'code',
-  accessType: 'offline',
-  // Enable code exchange
-  shouldAutoExchangeCode: true,
+  // Use token response type for mobile
+  responseType: 'token',
 };
 
 // Auth configuration object

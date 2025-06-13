@@ -3,13 +3,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Image,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+
+const localStyles = StyleSheet.create({
+  resendContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  timerText: {
+    fontSize: 14,
+    color: '#666',
+    marginRight: 5,
+  },
+  linkDisabled: {
+    opacity: 0.5,
+  },
+});
 
 export default function VerifyOTPScreen() {
   const [otp, setOtp] = useState('');
@@ -17,6 +35,7 @@ export default function VerifyOTPScreen() {
   const [timer, setTimer] = useState(60);
   const [isLoading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(false);
+  const [otpError, setOtpError] = useState('');
 
   useEffect(() => {
     // Get the email from storage that was saved during signup
@@ -47,11 +66,14 @@ export default function VerifyOTPScreen() {
 
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) {
-      Alert.alert('Error', 'Please enter a valid 6-digit OTP');
+      console.log('Please enter a valid 6-digit OTP');
+      // Alert.alert('Error', 'Please enter a valid 6-digit OTP');
+      setOtpError('Please enter a valid 6-digit OTP');
       return;
     }
 
     setIsLoading(true);
+    setOtpError('');
     try {
       const storedOTP = await AsyncStorage.getItem('tempOTP');
       
@@ -70,22 +92,14 @@ export default function VerifyOTPScreen() {
         await AsyncStorage.removeItem('tempOTP');
         await AsyncStorage.removeItem('tempEmail');
         await AsyncStorage.removeItem('tempPassword');
-        
-        Alert.alert(
-          'Success',
-          'Email verified and account created successfully!',
-          [
-            {
-              text: 'Continue',
-              onPress: () => router.replace('/(tabs)/dashboard')
-            }
-          ]
-        );
+
+        // Redirect to select goal page
+        router.replace('/(tabs)/select-goal');
       } else {
-        Alert.alert('Error', 'Invalid OTP. Please try again.');
+        setOtpError('Invalid OTP. Please try again.');
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to verify OTP. Please try again.');
+      setOtpError('Failed to verify OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -119,19 +133,21 @@ export default function VerifyOTPScreen() {
       <Text style={styles.heading}>Verify your email</Text>
       
       <Text style={styles.subHeading}>
-        We've sent a verification code to{'\n'}
-        {email}
+        We've sent a verification code to {email}
       </Text>
-
       <TextInput
         placeholder="Enter 6-digit OTP"
         value={otp}
-        onChangeText={setOtp}
-        style={styles.input}
+        onChangeText={(text) => {
+          setOtp(text);
+          setOtpError('');
+        }}
+        style={[styles.input, otpError ? styles.inputError : null]}
         keyboardType="number-pad"
         maxLength={6}
         editable={!isLoading}
       />
+      {otpError ? <Text style={styles.errorText}>{otpError}</Text> : null}
 
       <TouchableOpacity
         style={[
@@ -146,8 +162,8 @@ export default function VerifyOTPScreen() {
         </Text>
       </TouchableOpacity>
 
-      <View style={styles.resendContainer}>
-        <Text style={styles.timerText}>
+      <View style={localStyles.resendContainer}>
+        <Text style={localStyles.timerText}>
           {canResend ? 'Didn\'t receive the code?' : `Resend code in ${timer}s`}
         </Text>
         <TouchableOpacity
@@ -156,7 +172,7 @@ export default function VerifyOTPScreen() {
         >
           <Text style={[
             styles.link,
-            (!canResend || isLoading) ? styles.linkDisabled : null
+            (!canResend || isLoading) ? localStyles.linkDisabled : null
           ]}>
             Resend OTP
           </Text>

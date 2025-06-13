@@ -18,8 +18,14 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#2c3e50',
+  },
+  subHeading: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'left',
+    color: '#405642',
   },
   input: {
     backgroundColor: '#f8f9fa',
@@ -39,7 +45,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#085439',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
